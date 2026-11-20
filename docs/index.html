@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 客服 Agent · 企业微信工作台演示</title>
+<meta name="description" content="一个可运行的 AI 客服 Agent Demo：意图识别、Skills 路由、工具调用、人工接管，有 Key 走大模型，没 Key 自动降级离线引擎。">
+<style>
+  :root {
+    --bg: #f7f8f7;
+    --card: #ffffff;
+    --ink: #17211b;
+    --muted: #5e6b63;
+    --rule: #e2e6e2;
+    --green: #07c160;
+    --green-dark: #05974a;
+    --green-soft: #eaf8f0;
+    --amber: #b45309;
+    --amber-soft: #fdf3e7;
+    --code-bg: #101a14;
+    --mono: "JetBrains Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+    --max: 920px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--green-dark); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  header.hero {
+    padding: 76px 0 52px;
+    background:
+      radial-gradient(circle at 14% 18%, rgba(7,193,96,0.10), transparent 42%),
+      radial-gradient(circle at 88% 8%, rgba(7,193,96,0.07), transparent 38%);
+    border-bottom: 1px solid var(--rule);
+  }
+  .badge-line { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .badge {
+    font-size: 12px; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--rule); background: var(--card); color: var(--muted);
+  }
+  .badge.on { border-color: rgba(7,193,96,0.4); background: var(--green-soft); color: var(--green-dark); }
+  h1 { font-size: 40px; line-height: 1.22; margin: 0 0 14px; letter-spacing: -0.02em; }
+  .lead { font-size: 17px; color: var(--muted); max-width: 640px; margin: 0 0 26px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 10px 20px; border-radius: 8px;
+    font-size: 14.5px; font-weight: 600; border: 1px solid transparent;
+  }
+  .btn.primary { background: var(--green); color: #fff; }
+  .btn.primary:hover { background: var(--green-dark); text-decoration: none; }
+  .btn.ghost { background: var(--card); border-color: var(--rule); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--green); color: var(--green-dark); text-decoration: none; }
+
+  section { padding: 54px 0 8px; }
+  h2 { font-size: 24px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 14.5px; margin: 0 0 22px; }
+  h3 { font-size: 16px; margin: 26px 0 10px; }
+
+  .grid { display: grid; gap: 14px; }
+  .grid.g2 { grid-template-columns: 1fr 1fr; }
+  .grid.g3 { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    background: var(--card); border: 1px solid var(--rule);
+    border-radius: 10px; padding: 18px 20px;
+  }
+  .card h4 { margin: 0 0 6px; font-size: 15px; }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); }
+  .card .ico {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--green-soft); color: var(--green-dark);
+    font-family: var(--mono); font-size: 12px; font-weight: 700; margin-bottom: 10px;
+  }
+
+  .flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .step {
+    background: var(--card); border: 1px solid var(--rule);
+    border-top: 3px solid var(--green); border-radius: 0 0 8px 8px;
+    padding: 12px 10px 12px; text-align: center;
+  }
+  .step .n { font-family: var(--mono); font-size: 11px; color: var(--green-dark); font-weight: 700; }
+  .step h5 { margin: 3px 0 4px; font-size: 13px; }
+  .step p { margin: 0; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .step.warn { border-top-color: var(--amber); }
+  .step.warn .n { color: var(--amber); }
+
+  pre {
+    margin: 0 0 14px; padding: 16px 18px; border-radius: 9px;
+    background: var(--code-bg); color: #d7e5dc; overflow-x: auto;
+    font-family: var(--mono); font-size: 13px; line-height: 1.75;
+  }
+  pre .c { color: #7f9487; }
+  code.inline {
+    font-family: var(--mono); font-size: 0.87em;
+    background: var(--green-soft); color: var(--green-dark);
+    padding: 1px 6px; border-radius: 4px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card); }
+  .table-wrap { border: 1px solid var(--rule); border-radius: 10px; overflow-x: auto; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { background: #f1f4f1; font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+
+  .note {
+    border-left: 4px solid var(--amber); background: var(--amber-soft);
+    border-radius: 0 8px 8px 0; padding: 13px 18px; font-size: 14px; margin: 18px 0;
+  }
+  .note b { color: var(--amber); }
+
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin-bottom: 6px; font-size: 14.5px; }
+
+  footer {
+    margin-top: 60px; padding: 26px 0 40px;
+    border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 30px; }
+    .grid.g2, .grid.g3 { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: repeat(2, 1fr); }
+    header.hero { padding: 48px 0 34px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge-line">
+      <span class="badge on">可运行 Demo</span>
+      <span class="badge">Python 3.10+</span>
+      <span class="badge">零第三方依赖</span>
+      <span class="badge">OpenAI 兼容接口</span>
+      <span class="badge">离线可降级</span>
+    </div>
+    <h1>企业微信 AI 客服 Agent</h1>
+    <p class="lead">客户在仿微信的客服工作台里发消息，Agent 完成意图识别、Skills 路由、工具调用和回复生成；遇到投诉、法律等高风险问题自动转人工。有 API Key 走大模型，没有 Key 自动降级到离线规则引擎。</p>
+    <div class="cta">
+      <a class="btn primary" href="#start">本地运行</a>
+      <a class="btn ghost" href="#arch">看看架构</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="features">
+    <h2>核心能力</h2>
+    <p class="sub">不是"更大的聊天框"，而是决策、行动、再生成。</p>
+    <div class="grid g3">
+      <div class="card">
+        <div class="ico">01</div>
+        <h4>Skills 文件化</h4>
+        <p>每个技能是一份 SKILL.md：触发词、可用工具、执行流程、约束。加业务只加目录，不改 Python。</p>
+      </div>
+      <div class="card">
+        <div class="ico">02</div>
+        <h4>工具是唯一事实源</h4>
+        <p>订单状态、工单号、知识库口径只能来自工具返回值，从机制上限制模型自由发挥。</p>
+      </div>
+      <div class="card">
+        <div class="ico">03</div>
+        <h4>双引擎自动降级</h4>
+        <p>有 Key 走 function calling，无 Key 或调用失败切离线规则引擎，两条路径共用同一套工具。</p>
+      </div>
+      <div class="card">
+        <div class="ico">04</div>
+        <h4>人工接管边界</h4>
+        <p>转人工后 AI 完全静默，只记录消息；坐席可随时把会话交还智能体，历史完整保留。</p>
+      </div>
+      <div class="card">
+        <div class="ico">05</div>
+        <h4>越权防护</h4>
+        <p>查询订单时校验客户归属，不会把 A 客户的订单信息返回给 B 客户。</p>
+      </div>
+      <div class="card">
+        <div class="ico">06</div>
+        <h4>可解释轨迹</h4>
+        <p>每次回复都展示决策链路：意图置信度、命中技能、工具入参与返回值、是否降级。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="arch">
+    <h2>一条消息走完六步</h2>
+    <p class="sub">右侧轨迹面板显示的就是这条链路。</p>
+    <div class="flow">
+      <div class="step warn">
+        <div class="n">STEP 1</div>
+        <h5>安全策略</h5>
+        <p>高风险词直接转人工</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 2</div>
+        <h5>意图识别</h5>
+        <p>规则表 + 置信度</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 3</div>
+        <h5>Skills 路由</h5>
+        <p>触发词打分取最高</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 4</div>
+        <h5>工具调用</h5>
+        <p>查订单 / 知识库 / 工单</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 5</div>
+        <h5>生成回复</h5>
+        <p>模型或离线模板</p>
+      </div>
+      <div class="step warn">
+        <div class="n">STEP 6</div>
+        <h5>兜底</h5>
+        <p>查不到就转人工，不编</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>本地运行</h2>
+    <p class="sub">不需要安装任何第三方包，克隆后两条命令即可启动。</p>
+    <pre><span class="c"># 1. 进入项目目录</span>
+cd wechat-ai-agent
+
+<span class="c"># 2. 启动（默认打开 http://127.0.0.1:8000）</span>
+python server.py</pre>
+    <p class="sub">Windows 也可以直接双击 <code class="inline">start.bat</code>。不加参数时会自动打开浏览器；只想启动服务用 <code class="inline">python server.py --no-browser</code>。</p>
+
+    <h3>接入真实大模型（可选）</h3>
+    <p class="sub">不配置也能完整跑通，配置后切换到 LLM 引擎。</p>
+    <pre><span class="c"># 在项目根目录新建 .env</span>
+LLM_API_KEY=你的 API Key</pre>
+    <p class="sub">默认走 DeepSeek 的 OpenAI 兼容接口，模型和地址可在 <code class="inline">config.json</code> 的 <code class="inline">llm</code> 段修改。</p>
+
+    <div class="note">
+      <b>说明：</b>这个仓库是本地可运行的演示项目，没有部署在线实例。所有客户、订单、知识库数据均为虚构，仅用于展示 Agent 链路。
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>内置技能与工具</h2>
+    <p class="sub">技能由 skills/ 下的 SKILL.md 定义，工具在 agent.py 的 ToolBox 中实现。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>类型</th><th>名称</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td>Skill</td><td>order-query</td><td>订单进度、交付时间、物流查询；支持省略式追问补全</td></tr>
+          <tr><td>Skill</td><td>after-sales</td><td>售后问题受理、创建工单并给出 SLA</td></tr>
+          <tr><td>Skill</td><td>product-consult</td><td>产品与价格咨询，只按知识库口径回答</td></tr>
+          <tr><td>Skill</td><td>human-handoff</td><td>识别转人工意图，带上下文交给坐席</td></tr>
+          <tr><td>Tool</td><td>query_order</td><td>按单号或客户查询订单，校验归属</td></tr>
+          <tr><td>Tool</td><td>search_knowledge</td><td>关键词加权 + 字符二元组重合度检索</td></tr>
+          <tr><td>Tool</td><td>create_ticket</td><td>创建售后工单，返回优先级与 SLA</td></tr>
+          <tr><td>Tool</td><td>transfer_human</td><td>将会话切换为人工接管状态</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="structure">
+    <h2>项目结构</h2>
+    <pre>wechat-ai-agent/
+├── agent.py              <span class="c"># Agent 内核：意图、路由、工具、双引擎</span>
+├── server.py             <span class="c"># 零依赖 HTTP 服务与 REST API</span>
+├── config.json           <span class="c"># 模型、限流、转人工关键词等配置</span>
+├── skills/               <span class="c"># 四个技能，每个一份 SKILL.md</span>
+│   ├── order-query/
+│   ├── after-sales/
+│   ├── product-consult/
+│   └── human-handoff/
+├── web/                  <span class="c"># 仿微信三栏工作台</span>
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+└── data/                 <span class="c"># 客户、订单、知识库等演示数据</span></pre>
+  </section>
+
+  <section id="design">
+    <h2>几个设计取舍</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h4>为什么意图识别先用规则？</h4>
+        <p>高频意图规则命中快、成本为零、可解释；置信度低于阈值的再交给模型分类，避免语义误判和额外调用。</p>
+      </div>
+      <div class="card">
+        <h4>为什么不用 Agent 框架？</h4>
+        <p>链路只有六步，自研三百多行就能完全掌控；每一步都能在轨迹里看到，排查问题比藏在框架内部容易得多。</p>
+      </div>
+      <div class="card">
+        <h4>怎么避免答错？</h4>
+        <p>工具和知识库没有命中就明确说不知道，并转人工；离线引擎只能拼模板，高风险问题直接短路，不进入生成环节。</p>
+      </div>
+      <div class="card">
+        <h4>并发与持久化</h4>
+        <p>会话与工单落 JSON 文件，服务端用锁串行化写入；异常统一返回 JSON，前端有超时与失败兜底，不会无限转圈。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>AI 客服 Agent · 演示项目</span>
+    <span>数据均为虚构，仅用于技术演示</span>
+  </footer>
+</div>
+
+</body>
+</html>
