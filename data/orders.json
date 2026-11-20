@@ -1,0 +1,57 @@
+[
+  {
+    "order_no": "ZW20261115001",
+    "customer_id": "c1",
+    "product": "AI 客服标准版（年付）",
+    "amount": 39800,
+    "status": "已支付，部署中",
+    "progress": 60,
+    "eta": "预计 2026-11-22 完成部署并交付使用",
+    "owner": "实施工程师 王工",
+    "created": "2026-11-15"
+  },
+  {
+    "order_no": "ZW20261118005",
+    "customer_id": "c1",
+    "product": "知识库调优增值服务（10 个场景）",
+    "amount": 4800,
+    "status": "处理中",
+    "progress": 30,
+    "eta": "预计 2026-11-25 交付调优报告",
+    "owner": "算法工程师 刘工",
+    "created": "2026-11-18"
+  },
+  {
+    "order_no": "ZW20261110002",
+    "customer_id": "c2",
+    "product": "7 天 POC 试用",
+    "amount": 0,
+    "status": "试用中",
+    "progress": 80,
+    "eta": "试用期至 2026-11-22，可申请延长 7 天",
+    "owner": "售前顾问 孙工",
+    "created": "2026-11-10"
+  },
+  {
+    "order_no": "ZW20261108003",
+    "customer_id": "c3",
+    "product": "AI 客服私有化部署（含 3 年维保）",
+    "amount": 86000,
+    "status": "已签约，排期中",
+    "progress": 10,
+    "eta": "预计 2026-12-05 进场实施，实施周期 3 周",
+    "owner": "项目经理 周工",
+    "created": "2026-11-08"
+  },
+  {
+    "order_no": "ZW20261020004",
+    "customer_id": "c4",
+    "product": "AI 客服基础版（年付）",
+    "amount": 19800,
+    "status": "已交付",
+    "progress": 100,
+    "eta": "2026-10-28 完成交付，质保期至 2027-10-27",
+    "owner": "实施工程师 王工",
+    "created": "2026-10-20"
+  }
+]

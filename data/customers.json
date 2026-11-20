@@ -1,0 +1,47 @@
+[
+  {
+    "id": "c1",
+    "name": "张伟",
+    "company": "津南智造",
+    "title": "技术负责人",
+    "avatar": "张",
+    "color": "#4c8bf5",
+    "tag": "企业版客户"
+  },
+  {
+    "id": "c2",
+    "name": "李静",
+    "company": "华元教育",
+    "title": "运营主管",
+    "avatar": "李",
+    "color": "#3eb575",
+    "tag": "试用中"
+  },
+  {
+    "id": "c3",
+    "name": "王海涛",
+    "company": "恒达物流",
+    "title": "IT 经理",
+    "avatar": "王",
+    "color": "#f2994a",
+    "tag": "待进场"
+  },
+  {
+    "id": "c4",
+    "name": "赵敏",
+    "company": "优家生活",
+    "title": "客服主管",
+    "avatar": "赵",
+    "color": "#9b6bf0",
+    "tag": "已交付"
+  },
+  {
+    "id": "c5",
+    "name": "陈晨",
+    "company": "新客户咨询",
+    "title": "初次接触",
+    "avatar": "陈",
+    "color": "#8b8f96",
+    "tag": "潜在客户"
+  }
+]

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>企业微信 AI 智能客服助手（模拟版）</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- 左侧功能栏 -->
+    <aside class="rail">
+      <div class="rail-avatar">祎</div>
+      <button class="rail-btn active" title="会话">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/></svg>
+      </button>
+      <button class="rail-btn" title="客户">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6"/></svg>
+      </button>
+      <button class="rail-btn" title="Skills">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6L21 9.4l-4.5 4.2 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.4l6.4-.8z"/></svg>
+      </button>
+      <div class="rail-spacer"></div>
+      <button class="rail-btn" title="设置">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+      </button>
+    </aside>
+
+    <!-- 客户列表 -->
+    <section class="sidebar">
+      <div class="sidebar-head">
+        <input id="search" type="text" placeholder="搜索客户 / 公司" />
+      </div>
+      <ul class="customer-list" id="customerList"></ul>
+      <div class="sidebar-foot">
+        <span class="dot"></span> 智能客服工作台
+      </div>
+    </section>
+
+    <!-- 聊天区 -->
+    <main class="chat">
+      <header class="chat-head">
+        <div class="chat-title">
+          <h2 id="chatName">加载中…</h2>
+          <small id="chatMeta"></small>
+        </div>
+        <div class="chat-actions">
+          <span class="badge" id="engineBadge">—</span>
+          <button id="btnDemo" class="btn primary">一键演示</button>
+          <button id="btnHandoff" class="btn">转人工</button>
+          <button id="btnReset" class="btn ghost">重置</button>
+          <button id="btnTrace" class="btn ghost">运行轨迹</button>
+        </div>
+      </header>
+
+      <div class="messages" id="messages"></div>
+
+      <footer class="composer">
+        <div class="chips" id="chips"></div>
+        <div class="input-row">
+          <textarea id="input" rows="3" placeholder="输入消息，Enter 发送，Shift + Enter 换行"></textarea>
+          <button id="btnSend" class="btn send">发送</button>
+        </div>
+        <div class="status-line">
+          <span id="statusLine">AI 自动接待中</span>
+          <span id="hintText">提示：试试“我的订单部署到哪一步了”</span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Agent 运行轨迹 -->
+    <aside class="trace-panel open" id="tracePanel">
+      <header>
+        <div>
+          <strong>Agent 运行轨迹</strong>
+          <small>实时展示每一轮推理步骤</small>
+        </div>
+        <button id="btnTraceClose" class="close">×</button>
+      </header>
+      <div class="trace-body" id="traceBody">
+        <div class="trace-empty">发送一条消息，这里会显示意图识别、Skill 路由、工具调用和生成过程。</div>
+      </div>
+      <footer class="trace-foot" id="traceFoot"></footer>
+    </aside>
+  </div>
+
+  <!-- Skill 详情弹层 -->
+  <div class="modal" id="skillModal">
+    <div class="modal-card">
+      <header class="modal-head">
+        <div>
+          <h3 id="skillTitle">Skill</h3>
+          <small id="skillName">skills/*/SKILL.md</small>
+        </div>
+        <button class="close" id="skillClose">×</button>
+      </header>
+      <div class="modal-body" id="skillBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

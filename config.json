@@ -1,0 +1,22 @@
+{
+  "mode": "auto",
+  "llm": {
+    "base_url": "https://api.deepseek.com/v1",
+    "model": "deepseek-chat",
+    "api_key_env": "LLM_API_KEY",
+    "temperature": 0.3,
+    "timeout": 30
+  },
+  "agent": {
+    "name": "小赢",
+    "company": "众赢天下",
+    "max_reply_chars": 120,
+    "max_tool_rounds": 4,
+    "reply_delay": 0.6,
+    "history_in_prompt": 8
+  },
+  "safety": {
+    "rate_limit_per_minute": 20,
+    "handoff_keywords": ["投诉", "举报", "律师", "起诉", "人工", "真人", "老板", "曝光"]
+  }
+}
