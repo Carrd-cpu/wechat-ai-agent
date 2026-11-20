@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: wechat-ai-agent
+    runtime: python
+    plan: free
+    buildCommand: python --version
+    startCommand: python server.py --no-browser
+    healthCheckPath: /api/state
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      # 想启用大模型在线版，在 Render 后台填这个变量；不填则自动使用离线规则引擎
+      - key: LLM_API_KEY
+        sync: false
